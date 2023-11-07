@@ -1,40 +1,49 @@
 import React, { useState, useEffect } from 'react';
 
 const VehicleSelector = () => {
-  const [data, setData] = useState([]);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/getalls');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const jsonData = await response.json();
-        setData(jsonData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        // Handle errors or set an error state here
-      }
-    };
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTHVpemEiLCJpZCI6MTA3LCJpYXQiOjE2OTkyNzM2NDQsImV4cCI6MTY5OTI3NzI0NH0.H7u1_JG7KgAm111jkH17M9PA3dpQQV6ciSaHyAsCPXY'; // Replace with your token
 
-    fetchData();
+    fetch('http://localhost:5000/dashboard', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user details');
+      }
+      return response.json();
+    })
+    .then(data => {
+      setUser(data); // Assuming user details are received as an object
+      setLoading(false);
+    })
+    .catch(error => {
+      console.error(error);
+      // Handle error: Show message, redirect to login, etc.
+      setLoading(false);
+    });
   }, []);
 
   return (
     <div>
-      <h1>Data from API</h1>
-      <ul>
-        {data.map(item => (
-          <li key={item.id}>
-            {/* Render each item's data */}
-            {/* Modify this part based on your actual data structure */}
-            <p>ID: {item.id}</p>
-            <p>Name: {item.customer_name}</p>
-            {/* Include other fields here */}
-          </li>
-        ))}
-      </ul>
+      <h1>Dashboard</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : user ? (
+        <div>
+          <p>Username: {user.name}</p>
+          <p>Email: {user.email}</p>
+          {/* Display other user details */}
+        </div>
+      ) : (
+        <p>No user details available.</p>
+      )}
     </div>
   );
 };

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
-import { AiOutlineMail,AiOutlineUser,AiOutlineKey } from "react-icons/ai";
+import { AiOutlineUser,AiOutlineKey } from "react-icons/ai";
 import {BsArrowRight} from "react-icons/bs"
 import {
   Button,
@@ -21,7 +21,7 @@ function Login() {
     //var item={username,password};
 
     const result = await axios
-      .post("https://shipment-backend.onrender.comss/login/displogin", {
+      .post("http://localhost:5000/login/displogin", {
         name: name,
         password: password,
       }).then(
